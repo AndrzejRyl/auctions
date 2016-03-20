@@ -1,5 +1,6 @@
 package com.agh.chmielarz.ryl.auctions.model;
 
+import com.agh.chmielarz.ryl.auctions.events.AuctionStartedEvent;
 import com.agh.chmielarz.ryl.auctions.events.BuyerBidEvent;
 import com.agh.chmielarz.ryl.auctions.events.BuyerInEvent;
 import com.agh.chmielarz.ryl.auctions.events.BuyerOutEvent;
@@ -16,32 +17,60 @@ import java.util.List;
  * It uses eventbus @Subscribe annotation needed for EventBus communication.
  */
 public abstract class Auction {
-    private List<Buyer> mBuyers = new ArrayList<>();
+    private long mId;
+    private EventBus mEventBus;
+    private List<Long> mBuyers = new ArrayList<>();
     private Product mProduct = null;
+    private AuctionType mAuctionType;
+    private double currentPrice = 0;
+    private long winner = 0;
 
-    public Auction(EventBus eventBus, Product product) {
+    public Auction(EventBus eventBus, long id, Product product) {
         // Register for events
-        eventBus.register(this);
+        mEventBus = eventBus;
+        mEventBus.register(this);
 
+        mId = id;
         mProduct = product;
+        mAuctionType = AuctionType.ENGLISH;
     }
 
     public void startAuction() {
-        throw new RuntimeException("This method needs to be implemented!");
+        // Inform everyone what auction has just started
+        mEventBus.post(new AuctionStartedEvent(this));
     }
 
     @Subscribe
     public void onBuyerBid(BuyerBidEvent event) {
-        throw new RuntimeException("This method needs to be implemented!");
+        if (event.getBid() > currentPrice) {
+            currentPrice = event.getBid();
+            winner = event.getBuyerId();
+        }
     }
 
     @Subscribe
     public void onBuyerIn(BuyerInEvent event) {
-        throw new RuntimeException("This method needs to be implemented!");
+        mBuyers.add(event.getBuyerId());
     }
 
     @Subscribe
     public void onBuyerOut(BuyerOutEvent event) {
-        throw new RuntimeException("This method needs to be implemented!");
+        mBuyers.remove(event.getBuyerId());
+    }
+
+    public long getId() {
+        return mId;
+    }
+
+    public Product getProduct() {
+        return mProduct;
+    }
+
+    public AuctionType getAuctionType() {
+        return mAuctionType;
+    }
+
+    public void setAuctionType(AuctionType auctionType) {
+        mAuctionType = auctionType;
     }
 }
