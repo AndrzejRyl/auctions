@@ -25,4 +25,10 @@ public class BuyerBidEvent {
     public double getBid() {
         return mBid;
     }
+
+
+    @Override
+    public String toString() {
+        return String.format("[%s]: auctionID: %d, buyerID: %d, bid: %.2f", getClass().getName().toUpperCase(), mAuctionId, mBuyerId, mBid);
+    }
 }

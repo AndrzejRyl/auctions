@@ -5,6 +5,10 @@ import com.agh.chmielarz.ryl.auctions.events.AuctionStartedEvent;
 import com.agh.chmielarz.ryl.auctions.model.Auction;
 import com.agh.chmielarz.ryl.auctions.model.Buyer;
 import com.agh.chmielarz.ryl.auctions.model.Product;
+import com.agh.chmielarz.ryl.auctions.model.auction_types.EnglishAuction;
+import com.agh.chmielarz.ryl.auctions.model.buyer_strategies.DefaultBuyer;
+import com.agh.chmielarz.ryl.auctions.utilities.CommandLineLogger;
+import com.agh.chmielarz.ryl.auctions.utilities.StatsPrinter;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 
@@ -38,20 +42,31 @@ public class AuctionHouse {
         eventBus = new EventBus("Auctions");
         listener = new AuctionHouseEventListener(eventBus);
 
-        // TODO: Create auctions
+        // Init logging
+        new CommandLineLogger(eventBus);
 
-        // TODO: Create buyers
+        // Create auctions
+        long i = 0;
+        for (Product product : mProducts)
+            auctions.add(new EnglishAuction(eventBus, i++, product));
 
-        // TODO: Start auctions
+        // Create buyers (let them all fight for all the products)
+        for (i = 0; i < 10; i++)
+            buyers.add(new DefaultBuyer(eventBus, i, mProducts));
+
+        // Start auctions
+        for (Auction auction : auctions)
+            auction.startAuction();
 
         // Wait for all auctions to finish
-        while (!listener.allAuctionsFinished()) ;
+        while (!listener.allAuctionsFinished());
 
-        // TODO: Gather all info and display it
+        StatsPrinter printer = new StatsPrinter(auctions);
+        printer.printStats();
     }
 
     private static class AuctionHouseEventListener {
-        private int auctionsCount = 0;
+        private volatile int auctionsCount = 0;
 
         public AuctionHouseEventListener(EventBus eventBus) {
             eventBus.register(this);
@@ -69,6 +84,10 @@ public class AuctionHouse {
         @Subscribe
         public void onAuctionsFinished(AuctionFinishedEvent event) {
             auctionsCount--;
+        }
+
+        public int getAuctionsCount() {
+            return auctionsCount;
         }
     }
 }

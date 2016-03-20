@@ -19,4 +19,10 @@ public class AuctionPriceChangeEvent {
     public double getCurrentPrice() {
         return mCurrentPrice;
     }
+
+
+    @Override
+    public String toString() {
+        return String.format("[%s]: auctionID: %d, currentPrice: %.2f", getClass().getName().toUpperCase(), mId, mCurrentPrice);
+    }
 }

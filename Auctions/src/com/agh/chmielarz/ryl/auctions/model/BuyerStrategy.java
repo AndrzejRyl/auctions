@@ -1,8 +1,12 @@
 package com.agh.chmielarz.ryl.auctions.model;
 
+import com.agh.chmielarz.ryl.auctions.events.BuyerBidEvent;
+import com.agh.chmielarz.ryl.auctions.events.BuyerInEvent;
+import com.agh.chmielarz.ryl.auctions.events.BuyerOutEvent;
 import com.google.common.eventbus.EventBus;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -12,13 +16,21 @@ public abstract class BuyerStrategy {
     public EventBus mEventBus;
     // Auctions we're currently deciding on
     private List<Auction> mAuctions = new ArrayList<>();
+    private long mBuyerId;
 
-    public BuyerStrategy(EventBus eventBus) {
+    List<AuctionType> normalFlowAuctions = Arrays.asList(AuctionType.ENGLISH, AuctionType.SEALED_BID, AuctionType.ELIMINATION);
+
+    public BuyerStrategy(EventBus eventBus, long buyerId) {
         mEventBus = eventBus;
+        mBuyerId = buyerId;
     }
 
     public void addAuction(Auction auction) {
         mAuctions.add(auction);
+
+        // In most cases we get into the auctions straight away
+        if (normalFlowAuctions.contains(auction.getAuctionType()))
+            mEventBus.post(new BuyerInEvent(mBuyerId, auction.getId()));
     }
 
     public void removeAuction(long id) {
@@ -41,6 +53,33 @@ public abstract class BuyerStrategy {
     }
 
     /**
+     * Decide what to do next and send appropriate events
+     *
+     * @param auctionId    Id of the auction connected to this event
+     * @param currentPrice Current price of the product connected to this event
+     */
+    public void onAuctionPriceChange(long auctionId, double currentPrice) {
+        // First check if we're still taking part in this auction
+        if (!takingPartInAuction(auctionId)) return;
+
+        Auction auction = mAuctions.stream().filter(value -> value.getId() == auctionId).findFirst().get();
+        double nextBid = getNextBid(auctionId, currentPrice);
+
+        // Bid or signal you want in if according to strategy you should
+        if (normalFlowAuctions.contains(auction.getAuctionType())) {
+            if (wantsToBid(auctionId, currentPrice))
+                mEventBus.post(new BuyerBidEvent(mBuyerId, auctionId, nextBid));
+            else {
+                mEventBus.post(new BuyerOutEvent(mBuyerId, auctionId));
+                mAuctions.remove(auction);
+            }
+        } else {
+            if (wantsToBid(auctionId, currentPrice))
+                mEventBus.post(new BuyerInEvent(mBuyerId, auctionId));
+        }
+    }
+
+    /**
      * Decides whether to bid or not based on a strategy
      *
      * @param id           Id of the auction
@@ -59,16 +98,6 @@ public abstract class BuyerStrategy {
      * @return Price that the given buyer should bid
      */
     public double getNextBid(long id, double currentPrice) {
-        throw new RuntimeException("This method needs to be implemented!");
-    }
-
-    /**
-     * Decide what to do next and send appropriate events
-     *
-     * @param auctionId    Id of the auction connected to this event
-     * @param currentPrice Current price of the product connected to this event
-     */
-    public void onAuctionPriceChange(long auctionId, double currentPrice) {
         throw new RuntimeException("This method needs to be implemented!");
     }
 

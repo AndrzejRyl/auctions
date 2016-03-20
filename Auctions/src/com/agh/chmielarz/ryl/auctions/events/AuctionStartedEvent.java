@@ -15,4 +15,9 @@ public class AuctionStartedEvent {
     public Auction getAuction() {
         return mAuction;
     }
+
+    @Override
+    public String toString() {
+        return String.format("[%s]: auctionID: %d", getClass().getName().toUpperCase(), mAuction.getId());
+    }
 }

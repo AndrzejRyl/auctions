@@ -22,4 +22,10 @@ public class BuyerInEvent {
     public long getAuctionId() {
         return mAuctionId;
     }
+
+
+    @Override
+    public String toString() {
+        return String.format("[%s]: auctionID: %d, buyerID: %d", getClass().getName().toUpperCase(), mAuctionId, mBuyerId);
+    }
 }

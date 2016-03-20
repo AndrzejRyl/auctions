@@ -1,7 +1,8 @@
 package com.agh.chmielarz.ryl.auctions.model;
 
-import com.agh.chmielarz.ryl.auctions.events.*;
-import com.agh.chmielarz.ryl.auctions.model.buyer_strategies.DefaultStrategy;
+import com.agh.chmielarz.ryl.auctions.events.AuctionFinishedEvent;
+import com.agh.chmielarz.ryl.auctions.events.AuctionPriceChangeEvent;
+import com.agh.chmielarz.ryl.auctions.events.AuctionStartedEvent;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 
@@ -25,7 +26,6 @@ public abstract class Buyer {
         mId = id;
         mProductsToBuy = productsToBuy;
         mAuctions = new ArrayList<>();
-        mStrategy = new DefaultStrategy(mEventBus);
 
         mEventBus.register(this);
     }
@@ -50,4 +50,15 @@ public abstract class Buyer {
         mStrategy.onAuctionPriceChange(event.getId(), currentPrice);
     }
 
+    public void setStrategy(BuyerStrategy strategy) {
+        mStrategy = strategy;
+    }
+
+    public EventBus getEventBus() {
+        return mEventBus;
+    }
+
+    public long getId() {
+        return mId;
+    }
 }

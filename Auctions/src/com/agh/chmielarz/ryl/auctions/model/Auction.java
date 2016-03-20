@@ -1,9 +1,6 @@
 package com.agh.chmielarz.ryl.auctions.model;
 
-import com.agh.chmielarz.ryl.auctions.events.AuctionStartedEvent;
-import com.agh.chmielarz.ryl.auctions.events.BuyerBidEvent;
-import com.agh.chmielarz.ryl.auctions.events.BuyerInEvent;
-import com.agh.chmielarz.ryl.auctions.events.BuyerOutEvent;
+import com.agh.chmielarz.ryl.auctions.events.*;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 
@@ -22,8 +19,8 @@ public abstract class Auction {
     private List<Long> mBuyers = new ArrayList<>();
     private Product mProduct = null;
     private AuctionType mAuctionType;
-    private double currentPrice = 0;
-    private long winner = 0;
+    private double mCurrentPrice = 0;
+    private long mWinner = 0;
 
     public Auction(EventBus eventBus, long id, Product product) {
         // Register for events
@@ -42,19 +39,25 @@ public abstract class Auction {
 
     @Subscribe
     public void onBuyerBid(BuyerBidEvent event) {
-        if (event.getBid() > currentPrice) {
-            currentPrice = event.getBid();
-            winner = event.getBuyerId();
+        if (event.getAuctionId() != mId) return;
+
+        if (event.getBid() > mCurrentPrice) {
+            mCurrentPrice = event.getBid();
+            mEventBus.post(new AuctionPriceChangeEvent(mId, mCurrentPrice));
         }
     }
 
     @Subscribe
     public void onBuyerIn(BuyerInEvent event) {
-        mBuyers.add(event.getBuyerId());
+        if (event.getAuctionId() != mId) return;
+
+        if (!mBuyers.contains(event.getBuyerId()))
+            mBuyers.add(event.getBuyerId());
     }
 
     @Subscribe
     public void onBuyerOut(BuyerOutEvent event) {
+        if (event.getAuctionId() != mId) return;
         mBuyers.remove(event.getBuyerId());
     }
 
@@ -72,5 +75,29 @@ public abstract class Auction {
 
     public void setAuctionType(AuctionType auctionType) {
         mAuctionType = auctionType;
+    }
+
+    public void setCurrentPrice(double price) {
+        mCurrentPrice = price;
+    }
+
+    public EventBus getEventBus() {
+        return mEventBus;
+    }
+
+    public double getCurrentPrice() {
+        return mCurrentPrice;
+    }
+
+    public List<Long> getBuyers() {
+        return mBuyers;
+    }
+
+    public long getWinner() {
+        return mWinner;
+    }
+
+    public void setWinner(long winner) {
+        mWinner = winner;
     }
 }

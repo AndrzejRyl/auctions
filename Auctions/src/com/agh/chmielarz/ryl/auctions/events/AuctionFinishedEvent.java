@@ -13,4 +13,9 @@ public class AuctionFinishedEvent {
     public long getId() {
         return mId;
     }
+
+    @Override
+    public String toString() {
+        return String.format("[%s]: auctionID: %d", getClass().getName().toUpperCase(), mId);
+    }
 }
