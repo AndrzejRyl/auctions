@@ -1,0 +1,103 @@
+Wspólne dla wszystkich aukcji:
+	*sprzedawca daje cenę początkową (może być 0 w przypadku sealed-bid)
+	*ile kasy potencjalny kupiec może wydać
+	*cena od jakiej zaczyna dany kupiec
+	*kupcy bidują (czasem jest tylko "in" albo "not in")
+	*zmienia się cena produktu
+
+Angielska:
+	*sprzedawca daje cenę początkową
+	*kupcy dają swoje bidy. Kazdy z bidów musi być większy, niż poprzedni
+	*aukcja kończy się po sprecyzowanym wcześniej czasie, ale gdy od jakiegoś czasu nie ma wyższego bida
+	*zwycięzca MUSI kupić produkt po tej cenie, jaką podał
+
+Japońska:
+	*sprzedawca daje cenę początkową
+	*kupujący mówią czy są "in", czy nie, czyli czy są skłonni kupić produkt po tej cenie, czy nie
+	*następnie sprzedawca zwiększa cenę i znowu pyta
+	*jeśli kupiec odpada, to nie może wejść z powrotem
+	*aukcja kończy się, gdy zostaje jeden kupiec i on MUSI kupić (nie wiem, co gdy żaden nie chce powiedzieć "in")
+
+Holdenderska:
+	*sprzedawca daje cenę z kosmosu
+	*potem stosunkowo ją zmniejsza
+	*jak kupiec usłyszy zadowalającą go cenę, to się zgłasza
+	*ten, który pierwszy się zgłosi, MUSI kupić produkt 
+
+Aukcje typu sealed-bid:
+	*każdy z kupców daje tzw. 'sealed-bid' czyli swojego bida, ALE potajemnie
+	*żaden z kupców nie zna bidów pozostałych kupców
+	*kupiec z najwyższym bidem MUSI kupić produkt ale po cenie:
+		-jaką sam podał
+		-jaką podał kupiec, który był na drugim miejscu
+
+Aukcje eliminacyjne:
+	*ładujemy aukcję typu sealed-bid
+	*kupiec z najmniejszym bidem odpada, a jego cena staję się jawną ceną minimalną drugiej rundy aukcji typu sealed-bid
+	*kontynuujemy tak, aż zostanie jeden kupiec i on wtedy płaci cenę minimalną ostatniej rundy
+
+
+Auction
+	List<Buyer> buyers;
+	Product product;
+	long price = 0;
+	long timeToFinish = -1; // Infinite time
+
+	startAuction();
+	onBuyerBid();
+	onBuyerIn();
+	onBuyerOut();
+
+Buyer
+	int id;
+	Map<Product, ProductStrategy> productsToBuy
+
+	onAuctionStarted(AuctionType); // We have to know which type of auction we're taken part in
+	onAuctionFinished();	// He can update his stratedy here based on which buyer won and what price he gave
+	onAuctionPriceChange();	// He can either bid or back out
+	wantsToBid(currentPrice); // Some kind of strategy (aggresive, neutral, etc.). We may put this dude into more than one auction and gather
+								// info on other buyers which would change our strategy, but that's in future ;)
+
+AuctionHouse
+	createBuyers() // Buyers with different strategies
+	createAuctions() // Probably a set of auctions with different types and parameters
+	startAuctions()
+	onAuctionFinished() // Smells really reactive to me ^^
+	onAllAuctionsFinished() // Called after all auctions called onAuctionFinished() callback. Gathers info from all of them and presents the 								results
+	
+EnglishAuction
+	startAuction(); // Set the minimum price and send onAuctionStarted event. Set time (probably random) and start the timer. After this timer 						is off send onAuctionFinished event.
+	onBuyerBid();	// Update the price and send onAuctionPriceChange()
+	onBuyerIn();	// Just add him to the list
+	onBuyerOut();	// Just remove him from the list
+
+JapaneseAuction
+	startAuction(); // Set the minimum price and send onAuctionStarted event. Wait for buyers to call in. After specified time call updatePrice
+	onBuyerBid();	// Buyers won't bid here so empty
+	onBuyerIn();	// Just add him to the list
+	onBuyerOut();	// Remove him from the list and check if len(buyers) is 1. If yes send onAuctionFinished event
+	updatePrice(); 	// Set a bigger price and send onAuctionPriceChange() event
+
+DutchAuction
+	startAuction(); // Set the minimum price and send onAuctionStarted event. Wait for buyers to call in. After specified time call updatePrice
+	onBuyerBid();	// Buyers won't bid here so empty
+	onBuyerIn();	// Add him to the list and call onAuctionFinised event
+	onBuyerOut();	// Won't happen
+	updatePrice(); 	// Set a smaller price and send onAuctionPriceChange() event
+
+SealedBidAuction
+	List<Long> prices;
+	startAuction(); // Send onAuctionStarted event
+	onBuyerBid();	// Update the price and add it to the prices list. If len(buyers) == BUYERS_AMOUNT send onAuctionFinished event
+	onBuyerIn();	// Just add him to the list. 
+	onBuyerOut();	// Won't happen
+
+
+EliminationAuction
+	List<Long> prices;
+	startAuction(); // Send onAuctionStarted event
+	onBuyerBid();	// Update the price and add it to the prices list. IF BUYERS_AMOUNT == 1 send onAuctionFinished event. If len(buyers) == 					BUYERS_AMOUNT send onAuctionPriceChange, reset buyers list and prices list and decrease BUYERS_AMOUNT by one.
+	onBuyerIn();	// Just add him to the list. 
+	onBuyerOut();	// Won't happen
+
+	
