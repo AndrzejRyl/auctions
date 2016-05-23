@@ -45,9 +45,10 @@ public abstract class Buyer {
     @Subscribe
     public void onAuctionPriceChange(AuctionPriceChangeEvent event) {
         double currentPrice = event.getCurrentPrice();
-
+        Auction auction = mAuctions.get((int) event.getId());
         // Decide what to do next
-        mStrategy.onAuctionPriceChange(event.getId(), currentPrice);
+
+        mStrategy.onAuctionPriceChange(event.getId(), currentPrice, auction.getProduct(), auction.getAuctionType());
     }
 
     public void setStrategy(BuyerStrategy strategy) {

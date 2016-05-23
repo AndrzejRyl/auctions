@@ -47,4 +47,9 @@ public class CommandLineLogger {
     public void onLog(BuyerOutEvent event) {
         System.out.println(event);
     }
+
+    @Subscribe
+    public void onLog(IncreasePriceEvent event){
+        System.out.println(event);
+    }
 }

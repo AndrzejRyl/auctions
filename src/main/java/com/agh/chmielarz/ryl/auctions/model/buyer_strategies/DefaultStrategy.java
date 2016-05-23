@@ -1,6 +1,8 @@
 package com.agh.chmielarz.ryl.auctions.model.buyer_strategies;
 
+import com.agh.chmielarz.ryl.auctions.model.AuctionType;
 import com.agh.chmielarz.ryl.auctions.model.BuyerStrategy;
+import com.agh.chmielarz.ryl.auctions.model.Product;
 import com.google.common.eventbus.EventBus;
 
 import java.util.Random;
@@ -10,6 +12,9 @@ import java.util.Random;
  */
 public class DefaultStrategy extends BuyerStrategy {
 
+    public static double MINIMUM_DECISION_RATE = 0.01;
+    public static double AVERAGE_DECISION_RATE = 1.0;
+
     public DefaultStrategy(EventBus eventBus, long buyerId) {
         super(eventBus, buyerId);
         // No additional init needed but
@@ -18,14 +23,28 @@ public class DefaultStrategy extends BuyerStrategy {
     }
 
     @Override
-    public boolean wantsToBid(long id, double currentPrice) {
+    public boolean wantsToBid(long id, double currentPrice, Product product, AuctionType auctionType) {
         Random r = new Random();
-        return currentPrice > r.nextInt() * 10.0 + 5000000;
+
+        switch (auctionType) {
+            case ENGLISH:
+                if (currentPrice / product.getPrice() < AVERAGE_DECISION_RATE)
+                    return r.nextDouble() < AVERAGE_DECISION_RATE - (currentPrice / product.getPrice());
+                else
+                    return r.nextDouble() < MINIMUM_DECISION_RATE;
+            case JAPANESE:
+                if (currentPrice / product.getPrice() < AVERAGE_DECISION_RATE)
+                    return r.nextDouble() < AVERAGE_DECISION_RATE - (currentPrice / product.getPrice());
+                else
+                    return r.nextDouble() < MINIMUM_DECISION_RATE;
+            default:
+                return false;
+        }
     }
 
     @Override
     public double getNextBid(long id, double currentPrice) {
         Random r = new Random();
-        return currentPrice * (1.2 + r.nextDouble());
+        return currentPrice * (1.0 + r.nextDouble());
     }
 }
