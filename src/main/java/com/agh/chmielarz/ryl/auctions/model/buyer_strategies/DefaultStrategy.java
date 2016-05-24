@@ -15,6 +15,7 @@ public class DefaultStrategy extends BuyerStrategy {
 
     private static double MINIMUM_DECISION_RATE = 0.01;
     private static double AVERAGE_DECISION_RATE = 1.0;
+    private static double SEALED_BID_DECISION_RATE = 0.80;
 
     public DefaultStrategy(EventBus eventBus, long buyerId) {
         super(eventBus, buyerId);
@@ -32,23 +33,37 @@ public class DefaultStrategy extends BuyerStrategy {
                 return wantsToBid(currentPrice, auction.getProduct());
             case DUTCH:
                 return wantsToBid(currentPrice, auction.getProduct());
+            case SEALED_BID:
+                Random r = new Random();
+                return r.nextDouble() < SEALED_BID_DECISION_RATE;
             default:
                 return false;
         }
     }
 
     @Override
-    public double getNextBid(long id, double currentPrice) {
-        Random r = new Random();
-        return currentPrice * (1.0 + r.nextDouble());
+    public double getNextBid(long id, double currentPrice, Auction auction) {
+        switch (auction.getAuctionType()){
+            case ENGLISH:
+                return getNextBid(id,currentPrice);
+            case SEALED_BID:
+                Random r = new Random();
+                return auction.getProduct().getPrice() * 2.0 * r.nextDouble();
+            default:
+                return 0;
+        }
     }
 
     private boolean wantsToBid(double currentPrice, Product product){
         Random r = new Random();
         if (currentPrice / product.getPrice() < AVERAGE_DECISION_RATE){
-            System.out.println("Dupa: " + (AVERAGE_DECISION_RATE - (currentPrice / product.getPrice())));
             return r.nextDouble() < AVERAGE_DECISION_RATE - (currentPrice / product.getPrice());}
         else
             return r.nextDouble() < MINIMUM_DECISION_RATE;
+    }
+
+    private double getNextBid(long id, double currentPrice){
+        Random r = new Random();
+        return currentPrice * (1.0 + r.nextDouble());
     }
 }

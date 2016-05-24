@@ -19,7 +19,7 @@ public abstract class Auction {
     private List<Long> mBuyers = new ArrayList<>();
     private Product mProduct = null;
     private AuctionType mAuctionType;
-    private double mCurrentPrice = -1;
+    private double mCurrentPrice = 0;
     private long mWinner = -1;
 
     public Auction(EventBus eventBus, long id, Product product) {
@@ -43,6 +43,7 @@ public abstract class Auction {
 
         if (event.getBid() > mCurrentPrice) {
             mCurrentPrice = event.getBid();
+            mWinner = event.getBuyerId();
             mEventBus.post(new AuctionPriceChangeEvent(mId, mCurrentPrice));
         }
     }

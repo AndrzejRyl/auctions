@@ -62,7 +62,7 @@ public abstract class BuyerStrategy {
         if (!takingPartInAuction(auctionId)) return;
 
         Auction auction = mAuctions.stream().filter(value -> value.getId() == auctionId).findFirst().get();
-        double nextBid = getNextBid(auctionId, currentPrice);
+        double nextBid = getNextBid(auctionId, currentPrice, auction);
 
         // Bid or signal you want in if according to strategy you should
         if (normalFlowAuctions.contains(auction.getAuctionType())) {
@@ -85,6 +85,7 @@ public abstract class BuyerStrategy {
      *
      * @param id           Id of the auction
      * @param currentPrice Current price of the product being sold on this auction
+     * @param auction      To decide which policy should be used in deciding
      * @return True if based on the strategy buyer should bid and false otherwise
      */
     public boolean wantsToBid(long id, double currentPrice, Auction auction) {
@@ -96,9 +97,10 @@ public abstract class BuyerStrategy {
      *
      * @param id           Id of the auction
      * @param currentPrice Current price of the product being sold on this auction
+     * @param auction      To decide which policy should be used in finding price
      * @return Price that the given buyer should bid
      */
-    public double getNextBid(long id, double currentPrice) {
+    public double getNextBid(long id, double currentPrice, Auction auction) {
         throw new RuntimeException("This method needs to be implemented!");
     }
 
