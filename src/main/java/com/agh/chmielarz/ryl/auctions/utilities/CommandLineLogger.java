@@ -4,8 +4,6 @@ import com.agh.chmielarz.ryl.auctions.events.*;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 
-import java.util.EventListener;
-
 /**
  * Created by FleenMobile on 2016-03-20.
  * <p>
@@ -41,7 +39,9 @@ public class CommandLineLogger {
     }
 
     @Subscribe
-    public void onLog(BuyerInEvent event) { System.out.println(event); }
+    public void onLog(BuyerInEvent event) {
+        System.out.println(event);
+    }
 
     @Subscribe
     public void onLog(BuyerOutEvent event) {
@@ -49,12 +49,17 @@ public class CommandLineLogger {
     }
 
     @Subscribe
-    public void onLog(IncreasePriceEvent event){
+    public void onLog(IncreasePriceEvent event) {
         System.out.println(event);
     }
 
     @Subscribe
-    public void onLog(DecreasePriceEvent event){
+    public void onLog(DecreasePriceEvent event) {
+        System.out.println(event);
+    }
+
+    @Subscribe
+    public void onLog(KickOutEvent event) {
         System.out.println(event);
     }
 }

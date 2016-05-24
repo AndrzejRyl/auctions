@@ -12,13 +12,12 @@ import java.util.TimerTask;
 
 /**
  * Created by FleenMobile on 2016-03-20.
- *
+ * <p>
  * English auction main rules:
- *      - seller sets the starting price
- *      - buyers either bid higher prices or back out of the auction
- *      - auction finishes after specified time
- *      - winner is the buyer with the highest bid
- *
+ * - seller sets the starting price
+ * - buyers either bid higher prices or back out of the auction
+ * - auction finishes after specified time
+ * - winner is the buyer with the highest bid
  */
 public class EnglishAuction extends Auction {
 

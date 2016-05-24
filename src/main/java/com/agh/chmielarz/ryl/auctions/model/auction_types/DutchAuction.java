@@ -7,7 +7,6 @@ import com.agh.chmielarz.ryl.auctions.model.Product;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 
-import java.util.Objects;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -26,7 +25,7 @@ public class DutchAuction extends Auction {
     }
 
     @Override
-    public void startAuction(){
+    public void startAuction() {
         super.startAuction();
 
         Random r = new Random();
@@ -37,7 +36,7 @@ public class DutchAuction extends Auction {
     }
 
     @Subscribe
-    public void onDecreasePrice(DecreasePriceEvent event){
+    public void onDecreasePrice(DecreasePriceEvent event) {
         if (event.getAuctionId() != getId()) return;
 
         setCurrentPrice(getNewPrice());
@@ -47,13 +46,15 @@ public class DutchAuction extends Auction {
     }
 
     @Override
-    public void onBuyerBid(BuyerBidEvent event) { return; }
+    public void onBuyerBid(BuyerBidEvent event) {
+        return;
+    }
 
     @Override
     public void onBuyerIn(BuyerInEvent event) {
         super.onBuyerIn(event);
 
-        if(!isWinner()) {
+        if (!isWinner()) {
             setWinner(event.getBuyerId());
             getEventBus().post(new AuctionFinishedEvent(getId()));
         }
@@ -67,17 +68,17 @@ public class DutchAuction extends Auction {
     private class DecreasePriceTask extends TimerTask {
         @Override
         public void run() {
-            if(!isWinner())
+            if (!isWinner())
                 getEventBus().post(new DecreasePriceEvent(getId()));
         }
     }
 
-    private double getNewPrice(){
+    private double getNewPrice() {
         Random r = new Random();
         return getCurrentPrice() * (1.0 - (r.nextDouble() * r.nextDouble()));
     }
 
-    private boolean isWinner(){
+    private boolean isWinner() {
         return !(getWinner() < 0);
     }
 }

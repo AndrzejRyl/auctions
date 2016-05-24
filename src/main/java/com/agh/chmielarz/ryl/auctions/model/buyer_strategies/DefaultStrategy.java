@@ -1,7 +1,6 @@
 package com.agh.chmielarz.ryl.auctions.model.buyer_strategies;
 
 import com.agh.chmielarz.ryl.auctions.model.Auction;
-import com.agh.chmielarz.ryl.auctions.model.AuctionType;
 import com.agh.chmielarz.ryl.auctions.model.BuyerStrategy;
 import com.agh.chmielarz.ryl.auctions.model.Product;
 import com.google.common.eventbus.EventBus;
@@ -43,26 +42,31 @@ public class DefaultStrategy extends BuyerStrategy {
 
     @Override
     public double getNextBid(long id, double currentPrice, Auction auction) {
-        switch (auction.getAuctionType()){
+        Random r = new Random();
+        switch (auction.getAuctionType()) {
             case ENGLISH:
-                return getNextBid(id,currentPrice);
+                return getNextBid(id, currentPrice);
             case SEALED_BID:
-                Random r = new Random();
                 return auction.getProduct().getPrice() * 2.0 * r.nextDouble();
+            case ELIMINATION:
+                if (currentPrice == 0)
+                    return auction.getProduct().getPrice() * 2.0 * r.nextDouble();
+                else
+                    return getNextBid(id, currentPrice);
             default:
                 return 0;
         }
     }
 
-    private boolean wantsToBid(double currentPrice, Product product){
+    private boolean wantsToBid(double currentPrice, Product product) {
         Random r = new Random();
-        if (currentPrice / product.getPrice() < AVERAGE_DECISION_RATE){
-            return r.nextDouble() < AVERAGE_DECISION_RATE - (currentPrice / product.getPrice());}
-        else
+        if (currentPrice / product.getPrice() < AVERAGE_DECISION_RATE) {
+            return r.nextDouble() < AVERAGE_DECISION_RATE - (currentPrice / product.getPrice());
+        } else
             return r.nextDouble() < MINIMUM_DECISION_RATE;
     }
 
-    private double getNextBid(long id, double currentPrice){
+    private double getNextBid(long id, double currentPrice) {
         Random r = new Random();
         return currentPrice * (1.0 + r.nextDouble());
     }

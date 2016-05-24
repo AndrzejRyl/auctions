@@ -7,7 +7,9 @@ import com.agh.chmielarz.ryl.auctions.model.Product;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 
-import java.util.*;
+import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by Tomek on 2016-05-23.
@@ -34,7 +36,7 @@ public class JapaneseAuction extends Auction {
     }
 
     @Subscribe
-    public void onIncreasePrice(IncreasePriceEvent event){
+    public void onIncreasePrice(IncreasePriceEvent event) {
         if (event.getAuctionId() != getId()) return;
 
         getBuyers().clear();
@@ -62,17 +64,17 @@ public class JapaneseAuction extends Auction {
     private class IncreasePriceTask extends TimerTask {
         @Override
         public void run() {
-            if( getBuyers().size() > 1) {
+            if (getBuyers().size() > 1) {
                 getEventBus().post(new IncreasePriceEvent(getId()));
             } else {
-                if ( getBuyers().size() == 1)
+                if (getBuyers().size() == 1)
                     setWinner(getBuyers().get(0));
                 getEventBus().post(new AuctionFinishedEvent(getId()));
             }
         }
     }
 
-    private double getNewPrice(){
+    private double getNewPrice() {
         Random r = new Random();
         return getCurrentPrice() * (1.0 + (r.nextDouble() * r.nextDouble()));
     }

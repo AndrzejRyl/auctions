@@ -54,6 +54,7 @@ public abstract class BuyerStrategy {
 
     /**
      * Decide what to do next and send appropriate events
+     *
      * @param auctionId    Id of the auction connected to this event
      * @param currentPrice Current price of the product connected to this event
      */
@@ -66,17 +67,19 @@ public abstract class BuyerStrategy {
 
         // Bid or signal you want in if according to strategy you should
         if (normalFlowAuctions.contains(auction.getAuctionType())) {
-            if (wantsToBid(auctionId, currentPrice, auction))
+            if (wantsToBid(auctionId, currentPrice, auction) || auction.getAuctionType().equals(AuctionType.ELIMINATION))
                 mEventBus.post(new BuyerBidEvent(mBuyerId, auctionId, nextBid));
             else {
                 mEventBus.post(new BuyerOutEvent(mBuyerId, auctionId));
                 mAuctions.remove(auction);
             }
         } else {
-            if (wantsToBid(auctionId, currentPrice, auction))
+            if (wantsToBid(auctionId, currentPrice, auction)) {
                 mEventBus.post(new BuyerInEvent(mBuyerId, auctionId));
-            if (auction.getAuctionType().equals(AuctionType.JAPANESE))
-                mAuctions.remove(auction);
+            } else {
+                if (auction.getAuctionType().equals(AuctionType.JAPANESE))
+                    mAuctions.remove(auction);
+            }
         }
     }
 

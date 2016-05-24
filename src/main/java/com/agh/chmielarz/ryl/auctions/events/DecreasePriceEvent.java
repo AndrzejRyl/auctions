@@ -16,7 +16,7 @@ public class DecreasePriceEvent {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return String.format("[%s]: auctionID: %d", getClass().getName().toUpperCase(), mAuctionId);
     }
 }

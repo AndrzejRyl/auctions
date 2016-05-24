@@ -59,7 +59,7 @@ public class AuctionHouse {
             auction.startAuction();
 
         // Wait for all auctions to finish
-        while (!listener.allAuctionsFinished());
+        while (!listener.allAuctionsFinished()) ;
 
         StatsPrinter printer = new StatsPrinter(auctions);
         printer.printStats();

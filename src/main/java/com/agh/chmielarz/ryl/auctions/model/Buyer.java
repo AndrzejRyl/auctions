@@ -3,6 +3,7 @@ package com.agh.chmielarz.ryl.auctions.model;
 import com.agh.chmielarz.ryl.auctions.events.AuctionFinishedEvent;
 import com.agh.chmielarz.ryl.auctions.events.AuctionPriceChangeEvent;
 import com.agh.chmielarz.ryl.auctions.events.AuctionStartedEvent;
+import com.agh.chmielarz.ryl.auctions.events.KickOutEvent;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 
@@ -49,6 +50,14 @@ public abstract class Buyer {
         // Decide what to do next
 
         mStrategy.onAuctionPriceChange(event.getId(), currentPrice);
+    }
+
+    @Subscribe
+    public void onKickOut(KickOutEvent event) {
+        if (event.getBuyerId() != mId) return;
+
+        mAuctions.removeIf(auction -> auction.getId() == event.getAuctionId());
+        mStrategy.removeAuction(event.getAuctionId());
     }
 
     public void setStrategy(BuyerStrategy strategy) {
