@@ -52,4 +52,9 @@ public class CommandLineLogger {
     public void onLog(IncreasePriceEvent event){
         System.out.println(event);
     }
+
+    @Subscribe
+    public void onLog(DecreasePriceEvent event){
+        System.out.println(event);
+    }
 }

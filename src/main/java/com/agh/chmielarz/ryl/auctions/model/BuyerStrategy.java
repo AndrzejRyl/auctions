@@ -56,10 +56,8 @@ public abstract class BuyerStrategy {
      * Decide what to do next and send appropriate events
      * @param auctionId    Id of the auction connected to this event
      * @param currentPrice Current price of the product connected to this event
-     * @param product
-     * @param auctionType
      */
-    public void onAuctionPriceChange(long auctionId, double currentPrice, Product product, AuctionType auctionType) {
+    public void onAuctionPriceChange(long auctionId, double currentPrice) {
         // First check if we're still taking part in this auction
         if (!takingPartInAuction(auctionId)) return;
 
@@ -68,15 +66,17 @@ public abstract class BuyerStrategy {
 
         // Bid or signal you want in if according to strategy you should
         if (normalFlowAuctions.contains(auction.getAuctionType())) {
-            if (wantsToBid(auctionId, currentPrice, product, auctionType))
+            if (wantsToBid(auctionId, currentPrice, auction))
                 mEventBus.post(new BuyerBidEvent(mBuyerId, auctionId, nextBid));
             else {
                 mEventBus.post(new BuyerOutEvent(mBuyerId, auctionId));
                 mAuctions.remove(auction);
             }
         } else {
-            if (wantsToBid(auctionId, currentPrice, product, auctionType))
+            if (wantsToBid(auctionId, currentPrice, auction))
                 mEventBus.post(new BuyerInEvent(mBuyerId, auctionId));
+            if (auction.getAuctionType().equals(AuctionType.JAPANESE))
+                mAuctions.remove(auction);
         }
     }
 
@@ -87,7 +87,7 @@ public abstract class BuyerStrategy {
      * @param currentPrice Current price of the product being sold on this auction
      * @return True if based on the strategy buyer should bid and false otherwise
      */
-    public boolean wantsToBid(long id, double currentPrice, Product product, AuctionType auctionType) {
+    public boolean wantsToBid(long id, double currentPrice, Auction auction) {
         throw new RuntimeException("This method needs to be implemented!");
     }
 

@@ -19,8 +19,8 @@ public abstract class Auction {
     private List<Long> mBuyers = new ArrayList<>();
     private Product mProduct = null;
     private AuctionType mAuctionType;
-    private double mCurrentPrice = 0;
-    private long mWinner = 0;
+    private double mCurrentPrice = -1;
+    private long mWinner = -1;
 
     public Auction(EventBus eventBus, long id, Product product) {
         // Register for events

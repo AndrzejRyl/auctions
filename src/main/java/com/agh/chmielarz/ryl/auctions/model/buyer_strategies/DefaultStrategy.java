@@ -1,5 +1,6 @@
 package com.agh.chmielarz.ryl.auctions.model.buyer_strategies;
 
+import com.agh.chmielarz.ryl.auctions.model.Auction;
 import com.agh.chmielarz.ryl.auctions.model.AuctionType;
 import com.agh.chmielarz.ryl.auctions.model.BuyerStrategy;
 import com.agh.chmielarz.ryl.auctions.model.Product;
@@ -12,8 +13,8 @@ import java.util.Random;
  */
 public class DefaultStrategy extends BuyerStrategy {
 
-    public static double MINIMUM_DECISION_RATE = 0.01;
-    public static double AVERAGE_DECISION_RATE = 1.0;
+    private static double MINIMUM_DECISION_RATE = 0.01;
+    private static double AVERAGE_DECISION_RATE = 1.0;
 
     public DefaultStrategy(EventBus eventBus, long buyerId) {
         super(eventBus, buyerId);
@@ -23,20 +24,14 @@ public class DefaultStrategy extends BuyerStrategy {
     }
 
     @Override
-    public boolean wantsToBid(long id, double currentPrice, Product product, AuctionType auctionType) {
-        Random r = new Random();
-
-        switch (auctionType) {
+    public boolean wantsToBid(long id, double currentPrice, Auction auction) {
+        switch (auction.getAuctionType()) {
             case ENGLISH:
-                if (currentPrice / product.getPrice() < AVERAGE_DECISION_RATE)
-                    return r.nextDouble() < AVERAGE_DECISION_RATE - (currentPrice / product.getPrice());
-                else
-                    return r.nextDouble() < MINIMUM_DECISION_RATE;
+                return wantsToBid(currentPrice, auction.getProduct());
             case JAPANESE:
-                if (currentPrice / product.getPrice() < AVERAGE_DECISION_RATE)
-                    return r.nextDouble() < AVERAGE_DECISION_RATE - (currentPrice / product.getPrice());
-                else
-                    return r.nextDouble() < MINIMUM_DECISION_RATE;
+                return wantsToBid(currentPrice, auction.getProduct());
+            case DUTCH:
+                return wantsToBid(currentPrice, auction.getProduct());
             default:
                 return false;
         }
@@ -46,5 +41,14 @@ public class DefaultStrategy extends BuyerStrategy {
     public double getNextBid(long id, double currentPrice) {
         Random r = new Random();
         return currentPrice * (1.0 + r.nextDouble());
+    }
+
+    private boolean wantsToBid(double currentPrice, Product product){
+        Random r = new Random();
+        if (currentPrice / product.getPrice() < AVERAGE_DECISION_RATE){
+            System.out.println("Dupa: " + (AVERAGE_DECISION_RATE - (currentPrice / product.getPrice())));
+            return r.nextDouble() < AVERAGE_DECISION_RATE - (currentPrice / product.getPrice());}
+        else
+            return r.nextDouble() < MINIMUM_DECISION_RATE;
     }
 }

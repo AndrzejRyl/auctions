@@ -48,7 +48,7 @@ public abstract class Buyer {
         Auction auction = mAuctions.get((int) event.getId());
         // Decide what to do next
 
-        mStrategy.onAuctionPriceChange(event.getId(), currentPrice, auction.getProduct(), auction.getAuctionType());
+        mStrategy.onAuctionPriceChange(event.getId(), currentPrice);
     }
 
     public void setStrategy(BuyerStrategy strategy) {

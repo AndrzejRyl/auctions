@@ -22,7 +22,7 @@ public class StatsPrinter {
             System.out.printf("[Auction no %d] %s\n", auction.getId(), auction.getProduct().getName());
             System.out.printf("Auction type: %s\nMarket value of the product: %.2f\n", auction.getAuctionType(), auction.getProduct().getPrice());
 
-            System.out.printf("\nFINAL PRICE: %.2f\nWINNER OF THE AUCTION: %d\n", auction.getCurrentPrice(), auction.getWinner());
+            System.out.printf("\nFINAL PRICE: %.2f\nWINNER OF THE AUCTION: %s\n", auction.getCurrentPrice(), auction.getWinner() < 0 ? "None" : auction.getWinner());
             System.out.println("=============================");
         }
     }
