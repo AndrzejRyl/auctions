@@ -30,7 +30,7 @@ public class EliminationAuction extends Auction {
     public void startAuction() {
         super.startAuction();
 
-        getEventBus().post(new AuctionPriceChangeEvent(getId(), getCurrentPrice()));
+        getEventBus().post(new AuctionPriceChangeEvent(getId(), AuctionType.ELIMINATION, getCurrentPrice()));
 
         Timer timer = new Timer();
         timer.schedule(new AuctionTask(), AUCTION_TIME);
@@ -55,7 +55,7 @@ public class EliminationAuction extends Auction {
                 getEventBus().post(new AuctionFinishedEvent(getId()));
             } else {
                 mOffers.clear();
-                getEventBus().post(new AuctionPriceChangeEvent(getId(), getCurrentPrice()));
+                getEventBus().post(new AuctionPriceChangeEvent(getId(), AuctionType.ELIMINATION, getCurrentPrice()));
             }
         }
     }

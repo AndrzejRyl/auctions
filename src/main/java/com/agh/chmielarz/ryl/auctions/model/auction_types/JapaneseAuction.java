@@ -31,7 +31,7 @@ public class JapaneseAuction extends Auction {
         Random r = new Random();
         setCurrentPrice(getProduct().getPrice() * r.nextDouble() * r.nextDouble());
 
-        getEventBus().post(new AuctionPriceChangeEvent(getId(), getCurrentPrice()));
+        getEventBus().post(new AuctionPriceChangeEvent(getId(), AuctionType.JAPANESE, getCurrentPrice()));
         mTimer.schedule(new IncreasePriceTask(), INCREASE_PRICE_TIME);
     }
 
@@ -42,7 +42,7 @@ public class JapaneseAuction extends Auction {
         getBuyers().clear();
         setCurrentPrice(getNewPrice());
 
-        getEventBus().post(new AuctionPriceChangeEvent(getId(), getCurrentPrice()));
+        getEventBus().post(new AuctionPriceChangeEvent(getId(), AuctionType.JAPANESE, getCurrentPrice()));
         mTimer.schedule(new IncreasePriceTask(), INCREASE_PRICE_TIME);
     }
 

@@ -37,7 +37,7 @@ public class EnglishAuction extends Auction {
         setCurrentPrice(getProduct().getPrice() * r.nextDouble());
 
         // Inform about it
-        getEventBus().post(new AuctionPriceChangeEvent(getId(), getCurrentPrice()));
+        getEventBus().post(new AuctionPriceChangeEvent(getId(), AuctionType.ENGLISH, getCurrentPrice()));
 
         // Start the timer
         Timer timer = new Timer();

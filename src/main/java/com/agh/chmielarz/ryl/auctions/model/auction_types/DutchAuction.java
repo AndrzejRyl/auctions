@@ -31,7 +31,7 @@ public class DutchAuction extends Auction {
         Random r = new Random();
         setCurrentPrice(getProduct().getPrice() * (2.0 + r.nextDouble()));
 
-        getEventBus().post(new AuctionPriceChangeEvent(getId(), getCurrentPrice()));
+        getEventBus().post(new AuctionPriceChangeEvent(getId(), AuctionType.DUTCH, getCurrentPrice()));
         mTimer.schedule(new DecreasePriceTask(), DECREASE_PRICE_TIME);
     }
 
@@ -41,7 +41,7 @@ public class DutchAuction extends Auction {
 
         setCurrentPrice(getNewPrice());
 
-        getEventBus().post(new AuctionPriceChangeEvent(getId(), getCurrentPrice()));
+        getEventBus().post(new AuctionPriceChangeEvent(getId(), AuctionType.DUTCH, getCurrentPrice()));
         mTimer.schedule(new DecreasePriceTask(), DECREASE_PRICE_TIME);
     }
 
