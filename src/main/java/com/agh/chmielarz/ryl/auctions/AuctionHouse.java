@@ -5,13 +5,16 @@ import com.agh.chmielarz.ryl.auctions.events.AuctionStartedEvent;
 import com.agh.chmielarz.ryl.auctions.model.Auction;
 import com.agh.chmielarz.ryl.auctions.model.Buyer;
 import com.agh.chmielarz.ryl.auctions.model.Product;
-import com.agh.chmielarz.ryl.auctions.model.auction_types.EnglishAuction;
+import com.agh.chmielarz.ryl.auctions.model.auction_types.*;
 import com.agh.chmielarz.ryl.auctions.model.buyer_strategies.DefaultBuyer;
 import com.agh.chmielarz.ryl.auctions.utilities.CommandLineLogger;
+import com.agh.chmielarz.ryl.auctions.utilities.DataAnalyzer;
 import com.agh.chmielarz.ryl.auctions.utilities.StatsPrinter;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 
+import javax.xml.crypto.Data;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,6 +34,8 @@ public class AuctionHouse {
             new Product(4, "Tom Cruise's house", 12000000)
     );
 
+    private static DataAnalyzer dataAnalyzer;
+
 
     public static void main(String[] args) {
         List<Auction> auctions = new ArrayList<>();
@@ -49,6 +54,17 @@ public class AuctionHouse {
         long i = 0;
         for (Product product : mProducts)
             auctions.add(new EnglishAuction(eventBus, i++, product));
+        for (Product product : mProducts)
+            auctions.add(new DutchAuction(eventBus, i++, product));
+        for (Product product : mProducts)
+            auctions.add(new EliminationAuction(eventBus, i++, product));
+        for (Product product : mProducts)
+            auctions.add(new JapaneseAuction(eventBus, i++, product));
+        for (Product product : mProducts)
+            auctions.add(new SealBidAuction(eventBus, i++, product));
+
+        // Init data analyzer
+        dataAnalyzer = new DataAnalyzer(eventBus, mProducts, auctions);
 
         // Create buyers (let them all fight for all the products)
         for (i = 0; i < 10; i++)
@@ -73,7 +89,17 @@ public class AuctionHouse {
         }
 
         public boolean allAuctionsFinished() {
-            return auctionsCount == 0;
+            if (auctionsCount == 0) {
+                try {
+                    dataAnalyzer.dumpData();
+                    return true;
+                } catch (IOException e) {
+                    System.err.println("PROBLEM WITH DUMPING DATA!!!!" + e.getMessage());
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         @Subscribe

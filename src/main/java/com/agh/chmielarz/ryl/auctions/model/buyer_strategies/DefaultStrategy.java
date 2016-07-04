@@ -12,9 +12,9 @@ import java.util.Random;
  */
 public class DefaultStrategy extends BuyerStrategy {
 
-    private static double MINIMUM_DECISION_RATE = 0.01;
-    private static double AVERAGE_DECISION_RATE = 1.0;
-    private static double SEALED_BID_DECISION_RATE = 0.80;
+    private static double MINIMUM_DECISION_RATE = 0.5;
+    private static double AVERAGE_DECISION_RATE = 2.0;
+    private static double SEALED_BID_DECISION_RATE = 0.99;
 
     public DefaultStrategy(EventBus eventBus, long buyerId) {
         super(eventBus, buyerId);
@@ -68,6 +68,6 @@ public class DefaultStrategy extends BuyerStrategy {
 
     private double getNextBid(long id, double currentPrice) {
         Random r = new Random();
-        return currentPrice * (1.0 + r.nextDouble());
+        return currentPrice * (1.5 + r.nextDouble());
     }
 }
