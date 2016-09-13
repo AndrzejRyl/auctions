@@ -7,15 +7,33 @@
     <groupId>com.agh.chmielarz.ryl</groupId>
     <artifactId>auctions</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <properties>
+        <guava.version>19.0</guava.version>
+        <jackson.version>2.7.3</jackson.version>
+    </properties>
 
     <dependencies>
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>19.0</version>
+            <version>${guava.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${jackson.version}</version>
         </dependency>
     </dependencies>
-
     <build>
         <plugins>
             <plugin>
