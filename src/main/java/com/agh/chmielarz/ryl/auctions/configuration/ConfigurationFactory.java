@@ -19,7 +19,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Created by Tomek on 08.09.2016.
+ * Created by Tomek on 16.06.2016.
  */
 public class ConfigurationFactory {
 

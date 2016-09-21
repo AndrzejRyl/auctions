@@ -3,7 +3,7 @@ package com.agh.chmielarz.ryl.auctions.configuration.pojos;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * Created by Tomek on 12.09.2016.
+ * Created by Tomek on 16.06.2016.
  */
 public class BuyerPojo {
     @JsonProperty("wants_to_bid_factor")

@@ -1,7 +1,7 @@
 package com.agh.chmielarz.ryl.auctions.configuration.pojos;
 
 /**
- * Created by Tomek on 12.09.2016.
+ * Created by Tomek on 16.06.2016.
  */
 public class ConfigurationPojo {
     private ProductPojo[] products;
