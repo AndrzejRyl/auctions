@@ -31,12 +31,12 @@ import static java.lang.System.exit;
 public class AuctionHouse {
     public static void main(String[] args) {
         // Parameters validation
-        if(args.length != 1) {
+        if (args.length != 1) {
             System.out.println("Wrong number of parameters, type: [file name].");
             exit(-1);
         }
         String fileName = args[0];
-        if(!(new File(fileName).exists())){
+        if (!(new File(fileName).exists())) {
             System.out.println("File: " + fileName + " does not exist.");
             exit(-1);
         }
@@ -58,13 +58,13 @@ public class AuctionHouse {
             //System.out.println("Auctions: " + auctions.size());
             //System.out.println("Buyers: " + buyers.size());
             // Start all auctions
-            if(products.size() <= 0){
+            if (products.size() <= 0) {
                 System.out.println("Not enough products in file, please provide at least one product.");
                 exit(-1);
-            } else if (auctions.size() <= 0 ) {
+            } else if (auctions.size() <= 0) {
                 System.out.println("Not enough auctions in file, please provide at least one correct auction.");
                 exit(-1);
-            } else if (buyers.size() <= 1){
+            } else if (buyers.size() <= 1) {
                 System.out.println("Not enough buyers in file, please provide at least one buyer.");
                 exit(-1);
             }

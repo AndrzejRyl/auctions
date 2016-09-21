@@ -13,19 +13,19 @@ public enum AuctionType {
     private static Map<String, AuctionType> auctionTypeMap = new HashMap<>();
 
     static {
-        for(AuctionType auctionType : AuctionType.values())
+        for (AuctionType auctionType : AuctionType.values())
             auctionTypeMap.put(auctionType.getText(), auctionType);
     }
 
-    AuctionType(String text){
+    AuctionType(String text) {
         this.text = text;
     }
 
-    private String getText(){
+    private String getText() {
         return this.text;
     }
 
-    public static AuctionType getByString(String key){
+    public static AuctionType getByString(String key) {
         return auctionTypeMap.get(key);
     }
 }

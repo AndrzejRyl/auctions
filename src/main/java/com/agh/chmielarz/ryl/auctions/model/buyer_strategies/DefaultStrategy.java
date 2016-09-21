@@ -63,7 +63,7 @@ public class DefaultStrategy extends BuyerStrategy {
 
     private boolean wantsToBid(double currentPrice, Product product) {
         Random r = new Random();
-        return r.nextDouble() < (((1.0 - (currentPrice/product.getPrice())) * wantsToBidFactor) + wantingFactor);
+        return r.nextDouble() < (((1.0 - (currentPrice / product.getPrice())) * wantsToBidFactor) + wantingFactor);
     }
 
     private double getNextBid(double currentPrice, Product product) {

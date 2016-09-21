@@ -13,7 +13,7 @@ public class BuyerPojo {
     @JsonProperty("wanting_factor")
     private double wantingFactor;
 
-    public BuyerPojo(){
+    public BuyerPojo() {
     }
 
     public double getWantsToBidFactor() {

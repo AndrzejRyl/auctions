@@ -8,7 +8,7 @@ public class ConfigurationPojo {
     private AuctionPojo[] auctions;
     private BuyerPojo[] buyers;
 
-    public ConfigurationPojo(){
+    public ConfigurationPojo() {
     }
 
     public ProductPojo[] getProducts() {

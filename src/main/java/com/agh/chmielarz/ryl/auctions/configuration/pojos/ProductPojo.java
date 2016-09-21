@@ -11,7 +11,7 @@ public class ProductPojo {
     @JsonProperty("price")
     private double price;
 
-    public ProductPojo(){
+    public ProductPojo() {
     }
 
     public String getName() {

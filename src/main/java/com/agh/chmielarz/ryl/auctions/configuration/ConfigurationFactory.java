@@ -32,25 +32,25 @@ public class ConfigurationFactory {
 
         long i = 0;
         List<Product> products = new LinkedList<Product>();
-        for(ProductPojo productPojo : configurationPojo.getProducts()) {
+        for (ProductPojo productPojo : configurationPojo.getProducts()) {
             System.out.println(productPojo);
             products.add(new Product(i++, productPojo.getName(), productPojo.getPrice()));
         }
 
         i = 0;
         List<Auction> auctions = new LinkedList<Auction>();
-        for(AuctionPojo auctionPojo : configurationPojo.getAuctions()){
+        for (AuctionPojo auctionPojo : configurationPojo.getAuctions()) {
             System.out.println(auctionPojo);
-            for(Product product : products){
-                switch (AuctionType.getByString(auctionPojo.getAuctionType().toLowerCase())){
+            for (Product product : products) {
+                switch (AuctionType.getByString(auctionPojo.getAuctionType().toLowerCase())) {
                     case ENGLISH:
                         auctions.add(new EnglishAuction(eventBus, i++, product, auctionPojo.getStartPriceFactor()));
                         break;
                     case JAPANESE:
-                        auctions.add(new JapaneseAuction(eventBus,i++,product, auctionPojo.getStartPriceFactor(), auctionPojo.getAuctionChangeFactor()));
+                        auctions.add(new JapaneseAuction(eventBus, i++, product, auctionPojo.getStartPriceFactor(), auctionPojo.getAuctionChangeFactor()));
                         break;
                     case DUTCH:
-                        auctions.add(new DutchAuction(eventBus,i++,product, auctionPojo.getStartPriceFactor(), auctionPojo.getAuctionChangeFactor()));
+                        auctions.add(new DutchAuction(eventBus, i++, product, auctionPojo.getStartPriceFactor(), auctionPojo.getAuctionChangeFactor()));
                         break;
                     case SEALED_BID:
                         auctions.add(new SealBidAuction(eventBus, i++, product));
@@ -66,7 +66,7 @@ public class ConfigurationFactory {
 
         i = 0;
         List<Buyer> buyers = new LinkedList<Buyer>();
-        for(BuyerPojo buyerPojo : configurationPojo.getBuyers()){
+        for (BuyerPojo buyerPojo : configurationPojo.getBuyers()) {
             System.out.println(buyerPojo);
             BuyerStrategy buyerStrategy = new DefaultStrategy(eventBus, i, buyerPojo.getWantingFactor(), buyerPojo.getWantsToBidFactor(), buyerPojo.getNextBidFactor());
             buyers.add(new DefaultBuyer(eventBus, i, products, buyerStrategy));
