@@ -10,10 +10,8 @@ public class AuctionPojo {
     private String auctionType;
     @JsonProperty("auction_change_factor")
     private double auctionChangeFactor;
-    @JsonProperty("japanese_price_factor")
-    private double japanesePriceFactor;
-    @JsonProperty("dutch_price_factor")
-    private double dutchPriceFactor;
+    @JsonProperty("start_price_factor")
+    private double startPriceFactor;
 
     public AuctionPojo() {
     }
@@ -26,12 +24,8 @@ public class AuctionPojo {
         return auctionChangeFactor;
     }
 
-    public double getJapanesePriceFactor() {
-        return japanesePriceFactor;
-    }
-
-    public double getDutchPriceFactor() {
-        return dutchPriceFactor;
+    public double getStartPriceFactor() {
+        return startPriceFactor;
     }
 
     @Override
@@ -39,8 +33,7 @@ public class AuctionPojo {
         return "AuctionPojo{" +
                 "auctionType='" + auctionType + '\'' +
                 ", auctionChangeFactor=" + auctionChangeFactor +
-                ", japanesePriceFactor=" + japanesePriceFactor +
-                ", dutchPriceFactor=" + dutchPriceFactor +
+                ", startPriceFactor=" + startPriceFactor +
                 '}';
     }
 }

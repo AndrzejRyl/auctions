@@ -12,20 +12,16 @@ import java.util.TimerTask;
 
 /**
  * Created by FleenMobile on 2016-03-20.
- * <p>
- * English auction main rules:
- * - seller sets the starting price
- * - buyers either bid higher prices or back out of the auction
- * - auction finishes after specified time
- * - winner is the buyer with the highest bid
  */
 public class EnglishAuction extends Auction {
 
     private static final long AUCTION_TIME = 10 * 1000;
+    private final double startPriceFactor;
 
-    public EnglishAuction(EventBus eventBus, long id, Product product) {
+    public EnglishAuction(EventBus eventBus, long id, Product product, double startPriceFactor) {
         super(eventBus, id, product);
         super.setAuctionType(AuctionType.ENGLISH);
+        this.startPriceFactor = startPriceFactor;
     }
 
     @Override
@@ -34,7 +30,7 @@ public class EnglishAuction extends Auction {
 
         // Set the minimum price based on product's market price
         Random r = new Random();
-        setCurrentPrice(getProduct().getPrice() * r.nextDouble());
+        setCurrentPrice(getProduct().getPrice() * startPriceFactor);
 
         // Inform about it
         getEventBus().post(new AuctionPriceChangeEvent(getId(), getCurrentPrice()));

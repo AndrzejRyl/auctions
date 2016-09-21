@@ -17,19 +17,22 @@ import java.util.TimerTask;
 public class DutchAuction extends Auction {
 
     private static final long DECREASE_PRICE_TIME = 1000;
+    private final double startPriceFactor;
+    private final double auctionPriceChangeFactor;
     private Timer mTimer = new Timer();
 
-    public DutchAuction(EventBus eventBus, long id, Product product) {
+    public DutchAuction(EventBus eventBus, long id, Product product, double startPriceFactor, double auctionPriceChangeFactor) {
         super(eventBus, id, product);
         super.setAuctionType(AuctionType.DUTCH);
+        this.startPriceFactor = startPriceFactor;
+        this.auctionPriceChangeFactor = auctionPriceChangeFactor;
     }
 
     @Override
     public void startAuction() {
         super.startAuction();
 
-        Random r = new Random();
-        setCurrentPrice(getProduct().getPrice() * (2.0 + r.nextDouble()));
+        setCurrentPrice(getProduct().getPrice() * startPriceFactor);
 
         getEventBus().post(new AuctionPriceChangeEvent(getId(), getCurrentPrice()));
         mTimer.schedule(new DecreasePriceTask(), DECREASE_PRICE_TIME);
@@ -75,7 +78,7 @@ public class DutchAuction extends Auction {
 
     private double getNewPrice() {
         Random r = new Random();
-        return getCurrentPrice() * (1.0 - (r.nextDouble() * r.nextDouble()));
+        return getCurrentPrice() - (r.nextDouble() * auctionPriceChangeFactor * getProduct().getPrice());
     }
 
     private boolean isWinner() {

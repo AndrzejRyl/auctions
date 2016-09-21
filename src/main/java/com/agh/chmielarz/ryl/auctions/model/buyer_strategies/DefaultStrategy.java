@@ -5,6 +5,7 @@ import com.agh.chmielarz.ryl.auctions.model.BuyerStrategy;
 import com.agh.chmielarz.ryl.auctions.model.Product;
 import com.google.common.eventbus.EventBus;
 
+import java.awt.*;
 import java.util.Random;
 
 /**
@@ -12,15 +13,22 @@ import java.util.Random;
  */
 public class DefaultStrategy extends BuyerStrategy {
 
-    private static double MINIMUM_DECISION_RATE = 0.01;
-    private static double AVERAGE_DECISION_RATE = 1.0;
-    private static double SEALED_BID_DECISION_RATE = 0.80;
+    private final double wantingFactor;
+    private final double wantsToBidFactor;
+    private final double nextBidFactor;
 
     public DefaultStrategy(EventBus eventBus, long buyerId) {
         super(eventBus, buyerId);
-        // No additional init needed but
-        // this is a default strategy. Normally we would probably keep track of
-        // some historical data like other buyers' bids etc.
+        this.wantingFactor = 0.05;
+        this.wantsToBidFactor = 0.5;
+        this.nextBidFactor = 0.5;
+    }
+
+    public DefaultStrategy(EventBus eventBus, long buyerId, double wantingFactor, double wantsToBidFactor, double nextBidFactor) {
+        super(eventBus, buyerId);
+        this.wantingFactor = wantingFactor;
+        this.wantsToBidFactor = wantsToBidFactor;
+        this.nextBidFactor = nextBidFactor;
     }
 
     @Override
@@ -33,8 +41,7 @@ public class DefaultStrategy extends BuyerStrategy {
             case DUTCH:
                 return wantsToBid(currentPrice, auction.getProduct());
             case SEALED_BID:
-                Random r = new Random();
-                return r.nextDouble() < SEALED_BID_DECISION_RATE;
+                return wantsToBid(currentPrice, auction.getProduct());
             default:
                 return false;
         }
@@ -42,17 +49,13 @@ public class DefaultStrategy extends BuyerStrategy {
 
     @Override
     public double getNextBid(long id, double currentPrice, Auction auction) {
-        Random r = new Random();
         switch (auction.getAuctionType()) {
             case ENGLISH:
-                return getNextBid(id, currentPrice);
+                return getNextBid(currentPrice, auction.getProduct());
             case SEALED_BID:
-                return auction.getProduct().getPrice() * 2.0 * r.nextDouble();
+                return getNextBid(currentPrice, auction.getProduct());
             case ELIMINATION:
-                if (currentPrice == 0)
-                    return auction.getProduct().getPrice() * 2.0 * r.nextDouble();
-                else
-                    return getNextBid(id, currentPrice);
+                return getNextBid(currentPrice, auction.getProduct());
             default:
                 return 0;
         }
@@ -60,14 +63,11 @@ public class DefaultStrategy extends BuyerStrategy {
 
     private boolean wantsToBid(double currentPrice, Product product) {
         Random r = new Random();
-        if (currentPrice / product.getPrice() < AVERAGE_DECISION_RATE) {
-            return r.nextDouble() < AVERAGE_DECISION_RATE - (currentPrice / product.getPrice());
-        } else
-            return r.nextDouble() < MINIMUM_DECISION_RATE;
+        return r.nextDouble() < (((1.0 - (currentPrice/product.getPrice())) * wantsToBidFactor) + wantingFactor);
     }
 
-    private double getNextBid(long id, double currentPrice) {
+    private double getNextBid(double currentPrice, Product product) {
         Random r = new Random();
-        return currentPrice * (1.0 + r.nextDouble());
+        return currentPrice + (r.nextDouble() * nextBidFactor * product.getPrice());
     }
 }

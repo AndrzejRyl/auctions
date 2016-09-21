@@ -17,19 +17,22 @@ import java.util.TimerTask;
 public class JapaneseAuction extends Auction {
 
     private static final long INCREASE_PRICE_TIME = 1000;
+    private final double startPriceFactor;
+    private final double auctionPriceChangeFactor;
     private Timer mTimer = new Timer();
 
-    public JapaneseAuction(EventBus eventBus, long id, Product product) {
+    public JapaneseAuction(EventBus eventBus, long id, Product product, double startPriceFactor, double auctionPriceChangeFactor) {
         super(eventBus, id, product);
         super.setAuctionType(AuctionType.JAPANESE);
+        this.startPriceFactor = startPriceFactor;
+        this.auctionPriceChangeFactor = auctionPriceChangeFactor;
     }
 
     @Override
     public void startAuction() {
         super.startAuction();
 
-        Random r = new Random();
-        setCurrentPrice(getProduct().getPrice() * r.nextDouble() * r.nextDouble());
+        setCurrentPrice(getProduct().getPrice() * startPriceFactor);
 
         getEventBus().post(new AuctionPriceChangeEvent(getId(), getCurrentPrice()));
         mTimer.schedule(new IncreasePriceTask(), INCREASE_PRICE_TIME);
@@ -76,6 +79,6 @@ public class JapaneseAuction extends Auction {
 
     private double getNewPrice() {
         Random r = new Random();
-        return getCurrentPrice() * (1.0 + (r.nextDouble() * r.nextDouble()));
+        return getCurrentPrice() + (r.nextDouble() * auctionPriceChangeFactor * getProduct().getPrice());
     }
 }

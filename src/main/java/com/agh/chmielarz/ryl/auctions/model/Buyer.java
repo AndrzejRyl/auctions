@@ -22,11 +22,12 @@ public abstract class Buyer {
     // Auctions this buyer is still taking part in
     private List<Auction> mAuctions;
 
-    public Buyer(EventBus eventBus, long id, List<Product> productsToBuy) {
+    public Buyer(EventBus eventBus, long id, List<Product> productsToBuy, BuyerStrategy buyerStrategy) {
         mEventBus = eventBus;
         mId = id;
         mProductsToBuy = productsToBuy;
         mAuctions = new ArrayList<>();
+        mStrategy = buyerStrategy;
 
         mEventBus.register(this);
     }
