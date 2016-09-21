@@ -18,14 +18,14 @@ public class JapaneseAuction extends Auction {
 
     private static final long INCREASE_PRICE_TIME = 1000;
     private final double startPriceFactor;
-    private final double auctionPriceChangeFactor;
+    private final double auctionChangeFactor;
     private Timer mTimer = new Timer();
 
-    public JapaneseAuction(EventBus eventBus, long id, Product product, double startPriceFactor, double auctionPriceChangeFactor) {
+    public JapaneseAuction(EventBus eventBus, long id, Product product, double startPriceFactor, double auctionChangeFactor) {
         super(eventBus, id, product);
         super.setAuctionType(AuctionType.JAPANESE);
         this.startPriceFactor = startPriceFactor;
-        this.auctionPriceChangeFactor = auctionPriceChangeFactor;
+        this.auctionChangeFactor = auctionChangeFactor;
     }
 
     @Override
@@ -79,6 +79,6 @@ public class JapaneseAuction extends Auction {
 
     private double getNewPrice() {
         Random r = new Random();
-        return getCurrentPrice() + (r.nextDouble() * auctionPriceChangeFactor * getProduct().getPrice());
+        return getCurrentPrice() + (r.nextDouble() * auctionChangeFactor * getProduct().getPrice());
     }
 }

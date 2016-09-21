@@ -3,22 +3,31 @@
     {
       "name" : "Tom Cruise's house",
       "price" : 12000000
-    },
-    {
-      "name" : "Audi R8",
-      "price" : 120000
     }
   ],
 
   "auctions" : [
     {
-      "auction_type" : "English",
-      "auction_change_factor" : 0.2
+      "auction_type" : "english",
+      "start_price_factor" : 0.1
     },
     {
-      "auction_type" : "Japanese",
-      "auction_change_factor" : 0.2
+      "auction_type" : "japanese",
+      "start_price_factor" : 0.1,
+      "auction_change_factor" : 0.1
+    },
+    {
+      "auction_type" : "dutch",
+      "start_price_factor" : 2.0,
+      "auction_change_factor" : 0.1
+    },
+    {
+      "auction_type" : "sealed bid"
+    },
+    {
+      "auction_type" : "elimination"
     }
+
   ],
 
   "buyers" : [
@@ -30,6 +39,11 @@
     {
       "wants_to_bid_factor" : 0.9,
       "next_bid_factor" : 0.1,
+      "wanting_factor" : 0.2
+    },
+    {
+      "wants_to_bid_factor" : 0.1,
+      "next_bid_factor" : 0.9,
       "wanting_factor" : 0.2
     }
   ]

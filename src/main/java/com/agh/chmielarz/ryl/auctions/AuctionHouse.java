@@ -1,5 +1,7 @@
 package com.agh.chmielarz.ryl.auctions;
 
+import com.agh.chmielarz.ryl.auctions.configuration.Configuration;
+import com.agh.chmielarz.ryl.auctions.configuration.ConfigurationFactory;
 import com.agh.chmielarz.ryl.auctions.events.AuctionFinishedEvent;
 import com.agh.chmielarz.ryl.auctions.events.AuctionStartedEvent;
 import com.agh.chmielarz.ryl.auctions.model.Auction;
@@ -12,9 +14,13 @@ import com.agh.chmielarz.ryl.auctions.utilities.StatsPrinter;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static java.lang.System.exit;
 
 /**
  * Created by FleenMobile on 2016-03-20.
@@ -23,46 +29,55 @@ import java.util.List;
  * and test their capabilities using different types of buyers.
  */
 public class AuctionHouse {
-
-    private final static List<Product> mProducts = Arrays.asList(
-            new Product(1, "Toothbrush", 12.30),
-            new Product(2, "Audi R8", 120000),
-            new Product(3, "Apache helicopter", 3500000),
-            new Product(4, "Tom Cruise's house", 12000000)
-    );
-
-
     public static void main(String[] args) {
-        List<Auction> auctions = new ArrayList<>();
-        List<Buyer> buyers = new ArrayList<>();
-        EventBus eventBus;
-        AuctionHouseEventListener listener;
-
+        // Parameters validation
+        if(args.length != 1) {
+            System.out.println("Wrong number of parameters, type: [file name].");
+            exit(-1);
+        }
+        String fileName = args[0];
+        if(!(new File(fileName).exists())){
+            System.out.println("File: " + fileName + " does not exist.");
+            exit(-1);
+        }
         // Create EventBus and register for events
-        eventBus = new EventBus("Auctions");
-        listener = new AuctionHouseEventListener(eventBus);
-
+        EventBus eventBus = new EventBus("Auctions");
+        // Create AuctionHouseEventListener for wainting purposes
+        AuctionHouseEventListener listener = new AuctionHouseEventListener(eventBus);
         // Init logging
-        new CommandLineLogger(eventBus);
+        CommandLineLogger commandLineLogger = new CommandLineLogger(eventBus);
 
-        // Create auctions
-        long i = 0;
-        for (Product product : mProducts)
-            auctions.add(new EnglishAuction(eventBus, i++, product));
-
-        // Create buyers (let them all fight for all the products)
-        for (i = 0; i < 10; i++)
-            buyers.add(new DefaultBuyer(eventBus, i, mProducts));
-
-        // Start auctions
-        for (Auction auction : auctions)
-            auction.startAuction();
-
-        // Wait for all auctions to finish
-        while (!listener.allAuctionsFinished()) ;
-
-        StatsPrinter printer = new StatsPrinter(auctions);
-        printer.printStats();
+        try {
+            // Get configuration from json file
+            Configuration configuration = ConfigurationFactory.getConfiguration(eventBus, fileName);
+            // Get auction house objects
+            List<Product> products = configuration.getProducts();
+            List<Auction> auctions = configuration.getAuctions();
+            List<Buyer> buyers = configuration.getBuyers();
+            //System.out.println("Products: " + products.size());
+            //System.out.println("Auctions: " + auctions.size());
+            //System.out.println("Buyers: " + buyers.size());
+            // Start all auctions
+            if(products.size() <= 0){
+                System.out.println("Not enough products in file, please provide at least one product.");
+                exit(-1);
+            } else if (auctions.size() <= 0 ) {
+                System.out.println("Not enough auctions in file, please provide at least one correct auction.");
+                exit(-1);
+            } else if (buyers.size() <= 1){
+                System.out.println("Not enough buyers in file, please provide at least one buyer.");
+                exit(-1);
+            }
+            auctions.forEach(Auction::startAuction);
+            // Wait for all auctions to finish
+            while (!listener.allAuctionsFinished()) ;
+            // Print all statistics
+            StatsPrinter printer = new StatsPrinter(auctions);
+            printer.printStats();
+        } catch (IOException e) {
+            System.out.println("Could not read configuration file.");
+            exit(-1);
+        }
     }
 
     private static class AuctionHouseEventListener {

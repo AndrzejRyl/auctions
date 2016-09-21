@@ -18,14 +18,14 @@ public class DutchAuction extends Auction {
 
     private static final long DECREASE_PRICE_TIME = 1000;
     private final double startPriceFactor;
-    private final double auctionPriceChangeFactor;
+    private final double auctionChangeFactor;
     private Timer mTimer = new Timer();
 
-    public DutchAuction(EventBus eventBus, long id, Product product, double startPriceFactor, double auctionPriceChangeFactor) {
+    public DutchAuction(EventBus eventBus, long id, Product product, double startPriceFactor, double auctionChangeFactor) {
         super(eventBus, id, product);
         super.setAuctionType(AuctionType.DUTCH);
         this.startPriceFactor = startPriceFactor;
-        this.auctionPriceChangeFactor = auctionPriceChangeFactor;
+        this.auctionChangeFactor = auctionChangeFactor;
     }
 
     @Override
@@ -78,7 +78,7 @@ public class DutchAuction extends Auction {
 
     private double getNewPrice() {
         Random r = new Random();
-        return getCurrentPrice() - (r.nextDouble() * auctionPriceChangeFactor * getProduct().getPrice());
+        return getCurrentPrice() - (r.nextDouble() * auctionChangeFactor * getProduct().getPrice());
     }
 
     private boolean isWinner() {

@@ -1,29 +1,31 @@
 package com.agh.chmielarz.ryl.auctions.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by FleenMobile on 2016-03-20.
  */
 public enum AuctionType {
-    ENGLISH("English"), JAPANESE("Japanese"), DUTCH("Dutch"), SEALED_BID("SealedBid"), ELIMINATION("Elimination");
+    ENGLISH("english"), JAPANESE("japanese"), DUTCH("dutch"), SEALED_BID("sealed bid"), ELIMINATION("elimination");
 
     private String text;
+    private static Map<String, AuctionType> auctionTypeMap = new HashMap<>();
+
+    static {
+        for(AuctionType auctionType : AuctionType.values())
+            auctionTypeMap.put(auctionType.getText(), auctionType);
+    }
 
     AuctionType(String text){
         this.text = text;
     }
 
-    public String getText(){
+    private String getText(){
         return this.text;
     }
 
-    public static AuctionType fromString(String text){
-        if (text != null) {
-            for (AuctionType b : AuctionType.values()) {
-                if (text.equalsIgnoreCase(b.text)) {
-                    return b;
-                }
-            }
-        }
-        return null;
+    public static AuctionType getByString(String key){
+        return auctionTypeMap.get(key);
     }
 }
