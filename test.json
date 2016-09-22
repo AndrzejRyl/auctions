@@ -9,16 +9,16 @@
   "auctions" : [
     {
       "auction_type" : "english",
-      "start_price_factor" : 0.1
+      "start_price_factor" : 0.33
     },
     {
       "auction_type" : "japanese",
       "start_price_factor" : 0.1,
-      "auction_change_factor" : 0.1
+      "auction_change_factor" : 0.2
     },
     {
       "auction_type" : "dutch",
-      "start_price_factor" : 2.0,
+      "start_price_factor" : 0.33,
       "auction_change_factor" : 0.1
     },
     {
@@ -34,17 +34,17 @@
     {
       "wants_to_bid_factor" : 0.5,
       "next_bid_factor" : 0.5,
-      "wanting_factor" : 0.0
+      "wanting_factor" : 0.5
     },
     {
-      "wants_to_bid_factor" : 0.9,
-      "next_bid_factor" : 0.1,
-      "wanting_factor" : 0.2
+      "wants_to_bid_factor" : 0.5,
+      "next_bid_factor" : 0.5,
+      "wanting_factor" : 0.5
     },
     {
-      "wants_to_bid_factor" : 0.1,
-      "next_bid_factor" : 0.9,
-      "wanting_factor" : 0.2
+      "wants_to_bid_factor" : 0.5,
+      "next_bid_factor" : 0.5,
+      "wanting_factor" : 0.5
     }
   ]
 }
