@@ -44,7 +44,7 @@ public abstract class Auction {
         if (event.getBid() > mCurrentPrice) {
             mCurrentPrice = event.getBid();
             mWinner = event.getBuyerId();
-            mEventBus.post(new AuctionPriceChangeEvent(mId, mCurrentPrice));
+            mEventBus.post(new AuctionPriceChangeEvent(mId, mAuctionType, mCurrentPrice));
         }
     }
 

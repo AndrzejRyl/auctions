@@ -29,7 +29,7 @@ public class SealBidAuction extends Auction {
     public void startAuction() {
         super.startAuction();
 
-        getEventBus().post(new AuctionPriceChangeEvent(getId(), getCurrentPrice()));
+        getEventBus().post(new AuctionPriceChangeEvent(getId(), AuctionType.SEALED_BID, getCurrentPrice()));
 
         Timer timer = new Timer();
         timer.schedule(new AuctionTask(), AUCTION_TIME);

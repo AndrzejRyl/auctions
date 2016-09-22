@@ -30,14 +30,14 @@ public class ConfigurationFactory {
 
         ConfigurationPojo configurationPojo = objectMapper.readValue(jsonData, ConfigurationPojo.class);
 
-        long i = 0;
+        long i = 1;
         List<Product> products = new LinkedList<Product>();
         for (ProductPojo productPojo : configurationPojo.getProducts()) {
             System.out.println(productPojo);
             products.add(new Product(i++, productPojo.getName(), productPojo.getPrice()));
         }
 
-        i = 0;
+        i = 1;
         List<Auction> auctions = new LinkedList<Auction>();
         for (AuctionPojo auctionPojo : configurationPojo.getAuctions()) {
             System.out.println(auctionPojo);
@@ -64,7 +64,7 @@ public class ConfigurationFactory {
             }
         }
 
-        i = 0;
+        i = 1;
         List<Buyer> buyers = new LinkedList<Buyer>();
         for (BuyerPojo buyerPojo : configurationPojo.getBuyers()) {
             System.out.println(buyerPojo);
