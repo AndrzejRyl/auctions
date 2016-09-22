@@ -31,13 +31,6 @@ import static java.lang.System.exit;
  */
 public class AuctionHouse {
 
-    private final static List<Product> mProducts = Arrays.asList(
-            new Product(1, "Toothbrush", 12.30),
-            new Product(2, "Audi R8", 120000),
-            new Product(3, "Apache helicopter", 3500000),
-            new Product(4, "Tom Cruise's house", 12000000)
-    );
-
     private static DataAnalyzer dataAnalyzer;
 
     public static void main(String[] args) {
@@ -67,7 +60,7 @@ public class AuctionHouse {
             List<Buyer> buyers = configuration.getBuyers();
 
             // Init data analyzer
-            dataAnalyzer = new DataAnalyzer(eventBus, mProducts, auctions);
+            dataAnalyzer = new DataAnalyzer(eventBus, products, auctions);
             //System.out.println("Products: " + products.size());
             //System.out.println("Auctions: " + auctions.size());
             //System.out.println("Buyers: " + buyers.size());
